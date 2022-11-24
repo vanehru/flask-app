@@ -9,6 +9,8 @@ WORKDIR /usr/src/app
 # Installing python dependencies
 COPY requirements.txt /usr/src/app/
 #RUN apt update -y && apt-get install python3-setuptools -y
+RUN pip3 install --upgrade setuptools
+RUN pip3 install --upgrade pip
 RUN pip install  -r requirements.txt
 
 # Copying src code to Container
