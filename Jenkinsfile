@@ -53,5 +53,22 @@ pipeline{
                 """
                 }
             }
+            stage('delete images'){
+                when {
+                    allOf {
+                        anyOf {
+                            expression { env.BRANCH_NAME == 'master' }
+                            expression { env.BRANCH_NAME == 'dev' }
+                            }
+                        expression { params.deploy == "true" }
+                        }
+                    }
+                steps{
+                sh """
+                docker rmi public.ecr.aws/q5y5m4j7/flask-app/dev:${currentBuild.previousBuild.number}
+      
+                """
+                }
+            }
     }
 }
