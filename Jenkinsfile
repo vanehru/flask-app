@@ -68,7 +68,7 @@ pipeline{
 
                         steps{
                         sh """
-                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${currentBuild.previousBuild.number}
+                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${currentBuild.previousBuild.number} || true
            
                         """
                         }
