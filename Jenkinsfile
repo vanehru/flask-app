@@ -44,8 +44,10 @@ pipeline{
                                     println('branch is not listed')
                                     sh'exit 0'
                                 }
+                            }
                         }
                     }
+
                 
                     stage('docker build'){
                         steps{
