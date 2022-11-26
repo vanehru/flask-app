@@ -33,9 +33,23 @@ pipeline{
                         }
                     }
                 stages{
+                    stage('set env_name'){
+                        steps{
+                            script {
+                                if (env.BRANCH_NAME == 'master') {
+                                    env_name= 'prod'
+                                } else if (env.BRANCH_NAME == 'dev') {
+                                    env_name= 'dev'
+                                } else {
+                                    println('branch is not listed')
+                                    sh'exit 0'
+                                }
+                        }
+                    }
+                
                     stage('docker build'){
                         steps{
-                        sh """docker build -t public.ecr.aws/q5y5m4j7/flask-app/dev:${BUILD_NUMBER} ."""
+                        sh """docker build -t public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${BUILD_NUMBER} ."""
                         }
                     }
 
@@ -43,7 +57,7 @@ pipeline{
                         steps{
                         sh """
                         aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
-                        docker push public.ecr.aws/q5y5m4j7/flask-app/dev:$BUILD_NUMBER 
+                        docker push public.ecr.aws/q5y5m4j7/flask-app/${env_name}:$BUILD_NUMBER 
                         """
                         }
                     }
@@ -52,8 +66,8 @@ pipeline{
 
                         steps{
                         sh """
-                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/dev:${currentBuild.previousBuild.number}
-            
+                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${currentBuild.previousBuild.number}
+           
                         """
                         }
                     }
