@@ -22,7 +22,7 @@ pipeline{
                         ])
                     }
                 }
-            stage('docker build'){
+            stage('docker image stages'){
                 when {
                     allOf {
                         anyOf {
@@ -32,43 +32,32 @@ pipeline{
                         expression { params.deploy == "true" }
                         }
                     }
-                steps{
-                sh """docker build -t public.ecr.aws/q5y5m4j7/flask-app/dev:${BUILD_NUMBER} ."""
-                }
-            }
-            stage('docker push'){
-                when {
-                    allOf {
-                        anyOf {
-                            expression { env.BRANCH_NAME == 'master' }
-                            expression { env.BRANCH_NAME == 'dev' }
-                            }
-                        expression { params.deploy == "true" }
+                stages{
+                    stage('docker build'){
+                        steps{
+                        sh """docker build -t public.ecr.aws/q5y5m4j7/flask-app/dev:${BUILD_NUMBER} ."""
                         }
                     }
-                steps{
-                sh """
-                aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
-                docker push public.ecr.aws/q5y5m4j7/flask-app/dev:$BUILD_NUMBER 
-                """
-                }
-            }
-            stage('delete images'){
-                when {
-                    allOf {
-                        anyOf {
-                            expression { env.BRANCH_NAME == 'master' }
-                            expression { env.BRANCH_NAME == 'dev' }
-                            }
-                        expression { params.deploy == "true" }
+
+                    stage('docker push'){
+                        steps{
+                        sh """
+                        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
+                        docker push public.ecr.aws/q5y5m4j7/flask-app/dev:$BUILD_NUMBER 
+                        """
                         }
                     }
-                steps{
-                sh """
-                docker rmi public.ecr.aws/q5y5m4j7/flask-app/dev:${currentBuild.previousBuild.number}
-      
-                """
-                }
+
+                    stage('delete images'){
+
+                        steps{
+                        sh """
+                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/dev:${currentBuild.previousBuild.number}
+            
+                        """
+                        }
+                    }
+                } 
             }
-    }
+        }
 }
