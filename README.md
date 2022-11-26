@@ -1,11 +1,33 @@
-# Basic Flask App
+# Python Flask Hello World
 
-This small repo demonstrates a proper file structure for a Flask app. The folders named *static* and *templates* are required.
+[![CI to Docker Hub](https://github.com/arska/flask-helloworld/actions/workflows/docker-image.yml/badge.svg)](https://github.com/arska/flask-helloworld/actions/workflows/docker-image.yml)
 
-**Routes** and **static files** are handled correctly in all `src` and `href` attributes in the template files.
+This is a very lightweight demo web application serving "Hello World" on TCP port 8080
 
-The template file `base.html` is used as a shell by the other three HTML templates. This means they insert content into `base.html` according to Jinja2 template rules.
+I use it to demo application deployment to OpenShift on https://appuio.ch
 
-After installing all dependencies, run the app by entering its folder and typing:
+* Web-GUI: "Add to project" -> search for "Python" -> Choose "Python" -> Next -> Version: 3.9 Name: flask-helloworld, Git Repository: https://github.com/arska/flask-helloworld.git -> Create -> Close
 
-`$ python routes.py`
+* CLI using source-to-image (s2i)
+```
+oc new-app python:3.9~https://github.com/arska/flask-helloworld.git; oc expose service flask-helloworld
+```
+
+* CLI using Dockerfile
+```
+oc new-app --strategy=docker https://github.com/arska/flask-helloworld.git; oc expose service flask-helloworld
+```
+
+You can clean up after with:
+```
+oc delete all -l app=flask-helloworld
+```
+
+You can also build and run this locally using docker
+```
+docker build -t flask-helloworld .
+docker run -p 8080:8080 flask-helloworld
+```
+the application is then accessible at http://127.0.0.1:8080/
+
+

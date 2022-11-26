@@ -1,28 +1,24 @@
-FROM python:3.8
+# Dockerfile
 
-# Creating Application Source Code Directory
-RUN mkdir -p /usr/src/app
+# inherit from this "empty base image", see https://hub.docker.com/_/python/
+FROM python:3.10-alpine
 
-# Setting Home Directory for containers
+
+# directory to install the app inside the container
 WORKDIR /usr/src/app
 
-# Installing python dependencies
-COPY requirements.txt /usr/src/app/
-#RUN apt update -y && apt-get install python3-setuptools -y
-RUN pip3 install --upgrade setuptools
-RUN pip3 install --upgrade pip
-RUN pip install  -r requirements.txt
+# install python dependencies, this will be cached if the requirements.txt file does not change
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copying src code to Container
-COPY . /usr/src/app
+# copy application source code into container
+COPY app.py .
 
-# Application Environment variables
-#ENV APP_ENV development
-ENV PORT 8080
+# drop root privileges when running the application
+USER 1001
 
-# Exposing Ports
-EXPOSE $PORT
+# expose this TCP-port
+EXPOSE 8080
 
-
-# Running Python Application
-ENTRYPOINT ["python3", "routes.py"]
+# run this command at run-time
+CMD [ "python", "app.py" ]
