@@ -13,7 +13,7 @@ def hello():
     """
     Hello world on root path
     """
-    return os.environ.get("MESSAGE", "Hello world!")
+    return os.environ.get("MESSAGE", "Hello world dev branch")
 
 
 if __name__ == "__main__":
