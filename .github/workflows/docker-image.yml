@@ -2,23 +2,21 @@ name: CI to Docker Hub
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
+    branches: 
+      - master
+      - dev
+      
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: Ec2-Runner
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ${{ github.repository }}:latest
+
+      - name: docker build
+        run: docker build . --file Dockerfile --tag public.ecr.aws/q5y5m4j7/flask-app/dev:$(date +%s)
+        
+      - name: docker push
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
+          docker push public.ecr.aws/q5y5m4j7/flask-app/dev:$(date +%s)
