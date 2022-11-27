@@ -8,7 +8,7 @@ on:
       
 jobs:
   build:
-    runs-on: Ec2-Runner
+    runs-on: self-hosted
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
