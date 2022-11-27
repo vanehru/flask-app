@@ -13,8 +13,7 @@ def hello():
     """
     Hello world on root path
     """
-    return os.environ.get("MESSAGE", "Hello world master branch ")
-
+    return os.environ.get("MESSAGE", "Hello world dev branch")
 
 
 
