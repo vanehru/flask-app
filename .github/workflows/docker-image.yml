@@ -18,9 +18,9 @@ jobs:
         
       - name: Set env NEED
         run: |
-          if ${{ BRANCH == 'master' }}; then
+          if [[ $BRANCH == 'master' ]]; then
               echo "env_name=prod" >> "$GITHUB_ENV"
-          elif ${{ BRANCH == 'master' }}; then
+          elif [[ $BRANCH == 'dev' ]]; then
               echo "env_name=dev" >> "$GITHUB_ENV"
           else
               echo "branch is not listed" >> "$GITHUB_ENV"
