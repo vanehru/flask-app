@@ -12,11 +12,21 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
+        
+      - name: Set env NEED
+        run: |
+          if [[ $BRANCH == 'master' ]]; then
+              echo "env_name=prod" >> "$GITHUB_ENV"
+          elif [[ $BRANCH == 'dev' && $GITHUB_EVENT_NAME == 'push' ] ]then
+              echo "env_name=dev" >> "$GITHUB_ENV"
+          else
+              echo "branch is not listed" >> "$GITHUB_ENV"
+          fi
 
       - name: docker build
-        run: docker build . --file Dockerfile --tag public.ecr.aws/q5y5m4j7/flask-app/dev:${GITHUB_RUN_NUMBER}
+        run: docker build . --file Dockerfile --tag public.ecr.aws/q5y5m4j7/flask-app/$env_name:${GITHUB_RUN_NUMBER}
         
       - name: docker push
         run: |
           aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
-          docker push public.ecr.aws/q5y5m4j7/flask-app/dev:${GITHUB_RUN_NUMBER}
+          docker push public.ecr.aws/q5y5m4j7/flask-app/$env_name:${GITHUB_RUN_NUMBER}
