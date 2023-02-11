@@ -51,7 +51,7 @@ pipeline{
                 
                     stage('docker build'){
                         steps{
-                        sh """docker build -t public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${BUILD_NUMBER} ."""
+                        sh """docker build -t public.ecr.aws/a6r9x9a3/flask-app/${env_name}:${BUILD_NUMBER} ."""
                         }
                     }
 
