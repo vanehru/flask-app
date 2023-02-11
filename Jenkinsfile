@@ -58,8 +58,8 @@ pipeline{
                     stage('docker push'){
                         steps{
                         sh """
-                        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/q5y5m4j7
-                        docker push public.ecr.aws/q5y5m4j7/flask-app/${env_name}:$BUILD_NUMBER 
+                        aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/a6r9x9a3
+                        docker push public.ecr.aws/a6r9x9a3/flask-app/${env_name}:$BUILD_NUMBER
                         """
                         }
                     }
@@ -68,7 +68,7 @@ pipeline{
 
                         steps{
                         sh """
-                        docker rmi public.ecr.aws/q5y5m4j7/flask-app/${env_name}:${currentBuild.previousBuild.number} || true
+                        docker rmi public.ecr.aws/a6r9x9a3/flask-app/${env_name}:${currentBuild.previousBuild.number} || true
            
                         """
                         }
