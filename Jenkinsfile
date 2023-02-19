@@ -1,5 +1,5 @@
 pipeline{
-    agent any
+    agent { label 'demo' }
     parameters {
         string(name: 'git_url', description: 'url of github', defaultValue: 'https://github.com/vanehru/flask-app.git')
         choice(name: 'deploy', choices: ['true', 'False'], description: 'deploy')
